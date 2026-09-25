@@ -21,7 +21,7 @@ Dython fills that gap with an association matrix that *looks* like a correlation
 | Category ↔ number | Correlation ratio | 0–1 |
 | Number ↔ number | Pearson | −1–1 |
 
-Demo data: Pokémon stats — type, legendary flag, numeric attributes.
+Demo data: `data/pokemon.csv` (vendored) — Pokémon stats — type, legendary flag, numeric attributes.
 
 ## When to use it
 
@@ -32,7 +32,7 @@ Demo data: Pokémon stats — type, legendary flag, numeric attributes.
 ## Run it
 
 ```bash
-pip install dython pandas
+pip install dython pandas  # notebook uses data/pokemon.csv
 git clone https://github.com/47096/dython.git
 cd dython
 jupyter notebook dython_demo.ipynb
