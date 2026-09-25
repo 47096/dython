@@ -1,89 +1,51 @@
-# Dython — Categorical Variable Correlation
+# Dython associations
 
-Measuring associations between categorical variables using Dython — because Pearson doesn't work on "yes" and "no."
+**Demo — relate categorical variables without faking Pearson.**
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/wsamuelw/dython/blob/main/dython_demo.ipynb)
+A short recipe for association heatmaps on non-numeric data (Theil’s U / correlation ratio). Not a client case study — an EDA tool demo.
 
-## Problem
+---
 
-Standard correlation (Pearson, Spearman) only works on numeric data. But most real-world datasets have categorical variables — colour, type, status, gender. How do you measure the relationship between "Fire" and "Legendary" in a Pokemon dataset? You can't just subtract them.
+## The question
 
-Dython solves this by computing association values between all pairs of categorical (and mixed) variables, producing a correlation-style heatmap for non-numeric data.
+Pearson only works on numbers. In real tables you have colour, status, type, gender…  
+**How do you see which categories move together?**
 
-## What It Does
+Dython fills that gap with an association matrix that *looks* like a correlation heatmap (0–1 for categorical pairs).
 
-1. **Identifies** categorical columns automatically
-2. **Calculates** association values between all categorical pairs
-3. **Visualises** the result as a heatmap with a colour gradient
+## What it shows
 
-## How Dython Works
+| Pairing | Method | Range |
+|---------|--------|-------|
+| Category ↔ category | Theil’s U | 0–1 |
+| Category ↔ number | Correlation ratio | 0–1 |
+| Number ↔ number | Pearson | −1–1 |
 
-Dython uses **Theil's U** (uncertainty coefficient) for nominal-nominal associations and **correlation ratio** for nominal-numeric. Both range from 0 (no association) to 1 (perfect association), so the matrix looks and feels like a Pearson correlation heatmap.
+Demo data: Pokémon stats — type, legendary flag, numeric attributes.
 
-| Association Type | Method | Range |
-|-----------------|--------|-------|
-| Categorical ↔ Categorical | Theil's U | 0–1 |
-| Categorical ↔ Numeric | Correlation ratio | 0–1 |
-| Numeric ↔ Numeric | Pearson | -1 to 1 |
+## When to use it
 
-## Setup
+- Early EDA on survey / CRM / catalogue data  
+- Feature shortlists before modelling  
+- Teaching association ≠ Pearson  
 
-### Google Colab
-
-Click the badge above.
-
-### Local
+## Run it
 
 ```bash
 pip install dython pandas
-git clone https://github.com/wsamuelw/dython.git
+git clone https://github.com/47096/dython.git
 cd dython
 jupyter notebook dython_demo.ipynb
 ```
 
-## Key Code
-
 ```python
 from dython.nominal import associations, identify_nominal_columns
-
-# auto-detect categorical columns
-categorical_features = identify_nominal_columns(df)
-
-# compute the full association matrix
-complete_correlation = associations(df, nominal_columns=categorical_features)
-
-# extract and display
-df_complete_corr = complete_correlation['corr']
-df_complete_corr.style.background_gradient(cmap='coolwarm')
+cat = identify_nominal_columns(df)
+associations(df, nominal_columns=cat)
 ```
 
-## Data
+**Stack:** [Dython](https://github.com/shakedzy/dython) · `pandas`
 
-**Pokemon Dataset** — includes Type, Colour, Legendary status, and other categorical attributes. The association matrix reveals which attributes are most strongly related.
+---
 
-## When to Use Dython
-
-- **EDA** — understand which categorical features are related before modelling
-- **Feature selection** — drop highly correlated categorical features (just like you would with numeric)
-- **Data profiling** — quickly see relationships in survey data, customer segments, or any categorical-heavy dataset
-
-## When NOT to Use It
-
-- **Only numeric data** — standard `df.corr()` is faster and sufficient
-- **Very large datasets** — Theil's U computation scales with unique categories
-- **Causation** — association ≠ causation, same as Pearson
-
-## Tech Stack
-
-- **dython** — categorical association measures
-- **pandas** — data handling
-- **matplotlib** — heatmap rendering (via dython)
-
-## References
-
-- [Dython documentation](http://shakedzy.xyz/dython/)
-- [Finding correlation for categorical variables](https://medium.com/@knoldus/how-to-find-correlation-value-of-categorical-variables-23de7e7a9e26)
-
-## License
-
-MIT
+*Demo companion — see [datafying](https://datafying.co/) case studies on customer and marketing analytics.*
